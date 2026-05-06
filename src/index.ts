@@ -1,0 +1,24 @@
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+
+import { sendNotification } from "./apns";
+
+const app = new Hono<{ Bindings: CloudflareBindings }>();
+
+app.post("/apns/:account/:token", async (c) => {
+  const account = c.req.param("account");
+  const deviceToken = c.req.param("token");
+  const body = await c.req.arrayBuffer();
+  try {
+    await sendNotification(account, body, deviceToken, c.env);
+    return c.body(null, 204);
+  } catch (e) {
+    const status = (e as Response).status;
+    if (status === 401 || status === 403 || status === 404) {
+      throw new HTTPException(410);
+    }
+    throw new HTTPException();
+  }
+});
+
+export default app;
