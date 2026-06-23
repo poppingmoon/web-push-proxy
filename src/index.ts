@@ -8,6 +8,9 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 app.post("/apns/:account/:token", async (c) => {
   const account = c.req.param("account");
   const deviceToken = c.req.param("token");
+  if (!/^[0-9a-fA-F]+$/.test(deviceToken)) {
+    throw new HTTPException(410);
+  }
   const body = await c.req.arrayBuffer();
   try {
     await sendNotification(account, body, deviceToken, c.env);
