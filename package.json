@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "hono": "^4.13.13",
-    "jose": "^6.2.12"
+    "jose": "^6.2.13"
   },
   "devDependencies": {
-    "wrangler": "^4.151.1"
+    "wrangler": "^4.152.0"
   }
 }
